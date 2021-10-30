@@ -75,19 +75,22 @@ def Jiffies() :
 def ActiveJiffies_(pid) :
   line = ""
   token = ""
-  f = open (kProcDirectory + str(pid) + kStatFilename)
-  f = f.readline()
-  stream = f.split()
-  jiffies = 0     
-  if(stream.__len__() > 21) :
-    user = int(stream[13])
-    kernel = int(stream[14])
-    children_user = int(stream[15])
-    children_kernel = int(stream[16])
-    jiffies = user + kernel + children_user + children_kernel
+  try :
+    f = open (kProcDirectory + str(pid) + kStatFilename)
+    f = f.readline()
+    stream = f.split()
+    jiffies = 0     
+    if(stream.__len__() > 21) :
+      user = int(stream[13])
+      kernel = int(stream[14])
+      children_user = int(stream[15])
+      children_kernel = int(stream[16])
+      jiffies = user + kernel + children_user + children_kernel
+    
+    return jiffies
+  except:
+    return 0
   
-  return jiffies
-
 ##########################################################
 
 def CpuUtilization() :
@@ -173,10 +176,12 @@ def Kernel() :
 ##########################################################
 
 def Command( pid ) :
-  f = open (kProcDirectory + str(pid) + kCmdlineFilename)
-  line = f.readline()
-  return line
-  
+  try :  
+    f = open (kProcDirectory + str(pid) + kCmdlineFilename)
+    line = f.readline()
+    return line
+  except :
+    return ""  
 ##########################################################
 
 def Ram( pid ) :
@@ -194,16 +199,19 @@ def Ram( pid ) :
 
 
 def Uid( pid) :
-  f= open( kProcDirectory + str(pid) + kStatusFilename)
-  stream = f.readlines()
-  for l in stream :
-    l = l.split()
-    if (l[0]== "Uid:")  :
-       return l[1]
+  try :  
+    f= open( kProcDirectory + str(pid) + kStatusFilename)
+    stream = f.readlines()
+    for l in stream :
+      l = l.split()
+      if (l[0]== "Uid:")  :
+        return l[1]
+    return ""
+    
+  except :  
+   return ""
+
   
-  return ""
-
-
 ##########################################################
 
 def User( pid) : 
@@ -222,12 +230,14 @@ def User( pid) :
 
 def UpTime(pid) : 
   time = 0
-  f = open(kProcDirectory + str(pid) + kStatFilename)
-  lines = f.readline()
-  time = lines.split()[13]
-  time =float(time) /os.sysconf(int(os.sysconf_names['SC_CLK_TCK']))
-  
-  return time
+  try :
+    f = open(kProcDirectory + str(pid) + kStatFilename)
+    lines = f.readline()
+    time = lines.split()[13]
+    time =float(time) /os.sysconf(int(os.sysconf_names['SC_CLK_TCK']))
+    return time
+  except :
+   return time
 
 
 ##########################################################

@@ -64,15 +64,12 @@ def DisplayProcesses( processes_, window_,  n) :
   window_.addstr(1+row, pid_column, "PID")
   window_.addstr(1+row, user_column, "USER")
   
-  try:
-    window_.addstr(1+row, cpu_column, "CPU[%%]")
-    window_.addstr(1+row, ram_column, "RAM[MB]")
-    window_.addstr(1+row, time_column, "TIME+")
-    window_.addstr(1+row, command_column, "COMMAND")
-    window_.attroff(curses.color_pair(2))
-  except curses.error:
-    pass
-  
+  window_.addstr(1+row, cpu_column, "CPU[%%]")
+  window_.addstr(1+row, ram_column, "RAM[MB]")
+  window_.addstr(1+row, time_column, "TIME+")
+  window_.addstr(1+row, command_column, "COMMAND")
+  window_.attroff(curses.color_pair(2))
+
   num_processes = processes_.__len__()
   if num_processes > n :
     num_processes = n
@@ -87,7 +84,7 @@ def DisplayProcesses( processes_, window_,  n) :
     window_.addstr(row, time_column,Format.ElapsedTime(processes_[i].UpTime()))
     x_max=window_.getmaxyx()
     x_max = x_max[1]
-    window_.addstr(row, command_column,str(processes_[i].Command())[0 : 15])
+    window_.addstr(row, command_column,str(processes_[i].Command())[0:10])
   
   return window_
 #########################################################
